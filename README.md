@@ -6,12 +6,10 @@ YIB stands for **Y**HC **I**RC **B**ot and is a planned project that has not sta
 The bot can be addressed by using it's prefix character before the command **!** eg. **!time**.
 
 ## Current Features ##
-----------------------
 
 * None (not for long, buddy!)
 
 ## Planned Features ##
-----------------------
 
 * Chat logging and publishing
 * Running events
@@ -27,14 +25,12 @@ The bot can be addressed by using it's prefix character before the command **!**
 
 
 ## Timeline ##
---------------
 
 Initial work has begun on the bot and we will be publishing and beta-testing a pre-release very soon.
 
 The first steps will be to get the auto compiling and [Travis.ci](https://travis-ci.org/) integration working, then we should be able to get things happening rather quickly with all of us working at once.
 
 ## Git repository and coding guidelines ##
-------------------------------------------
 
 The [git-repo](https://github.com/Youth-Hackers-Club/YIB/) is on github, currently empty. Once there is enough base code I'll push the initial commit and start testing the CI.
 
