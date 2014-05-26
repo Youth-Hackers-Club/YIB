@@ -1,4 +1,4 @@
-<project name="YIB" basedir="." default="main">
+<project name="YIB" basedir="." default="test">
 
     <property name="src.dir"     value="src"/>
 
@@ -24,6 +24,6 @@
     </target>
 
 
-    <target name="main" depends="compile"/>
+    <target name="test" depends="compile"/>
 
 </project>
