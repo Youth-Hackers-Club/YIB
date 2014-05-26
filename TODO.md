@@ -2,17 +2,17 @@ TODO
 ====
 
 - Code the base
--- Plugin Manager
--- API
+    - Plugin Manager
+    - API
 - Build File
--- JUnit tests
+    - JUnit tests
 - Travis file
--- Finalise config
+    - Finalise config
 - Make Plugins
--- time
--- seen
--- logging
--- permissions
--- games
--- quiz
--- Chat bot (in private query)
+    - time
+    - seen
+    - logging
+    - permissions
+    - games
+    - quiz
+    - Chat bot (in private query)
