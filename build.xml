@@ -5,8 +5,6 @@
     <property name="build.dir"   value="build"/>
     <property name="classes.dir" value="${build.dir}/classes"/>
 
-    <property name="main-class"  value="com.youthhackersclub.irc.bot.Main"/>
-
 
     <path id="jars">
         <fileset dir="lib" includes="**/*.jar"/>
