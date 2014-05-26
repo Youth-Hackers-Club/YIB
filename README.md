@@ -1,7 +1,8 @@
 YIB
 ===
+Travis Build Status: [![Build Status](https://travis-ci.org/Youth-Hackers-Club/YIB.png)](https://travis-ci.org/Youth-Hackers-Club/YIB) 
 
-YIB stands for **Y**HC **I**RC **B**ot and is a planned project that has not started yet. The idea is that the bot will always be connected to the YHC [IRC](http://wiki.youthhackersclub.com/index.php?title=IRC) channel.
+YIB stands for **Y** HC  **I** RC  **B** ot and is a planned project that has not started yet. The idea is that the bot will always be connected to the YHC [IRC](http://wiki.youthhackersclub.com/index.php?title=IRC) channel.
 
 The bot can be addressed by using it's prefix character before the command **!** eg. **!time**.
 
