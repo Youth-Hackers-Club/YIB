@@ -7,4 +7,9 @@ notifications:
     on_success: never
     on_failure: always
   irc:
-    - "chat.freenode.net#YHC"
+    channels:
+      - "chat.freenode.net#YHC"
+    template:
+          - "\u000304%{repository_name}/%{branch} #%{build_number} (%{author}): \u0002%{result}"
+          - "\u000303Commit Message: %{commit_message}"
+    skip_join: true
