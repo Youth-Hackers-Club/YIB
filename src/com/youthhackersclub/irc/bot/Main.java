@@ -1,6 +1,5 @@
 package com.youthhackersclub.irc.bot;
 
-import com.youthhackersclub.irc.bot.com.youthhackersclub.irc.bot.commands.Time;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 
@@ -13,7 +12,7 @@ public class Main {
 			.setLogin("YIB") //login part of hostmask, eg name:login@host
 			.setAutoNickChange(false) //Automatically change nick when the current one is in use
 			.setCapEnabled(true) //Enable CAP features
-			.addListener(new Time()) //This class is a listener, so add it to the bots known listeners
+//			.addListener(new Time()) //This class is a listener, so add it to the bots known listeners
 			.setServerHostname("irc.freenode.net")
 			.addAutoJoinChannel("#YHC") //Join the official #pircbotx channel
 			.setNickservPassword("YoureTheBestAround")
