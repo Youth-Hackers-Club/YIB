@@ -12,4 +12,3 @@ notifications:
     template:
           - "%{repository_name}/%{branch} #%{build_number} (%{author}): %{result}"
           - "Commit Message: %{commit_message}"
-    use_notice: true
