@@ -20,7 +20,6 @@ public class Main {
 		
 		PircBotX bot = new PircBotX(configuration);
 
-
 		try {
 			bot.startBot();
 		} catch (Exception ex) {
