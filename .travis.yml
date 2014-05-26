@@ -10,6 +10,6 @@ notifications:
     channels:
       - "chat.freenode.net#YHC"
     template:
-          - "%{repository_name}/%{branch} #%{build_number} (%{author}): %{result}"
+          - "%{repository_name}/%{branch} #%{build_number} (%{author}): \u0002%{result}"
           - "Commit Message: %{commit_message}"
     skip_join: true
