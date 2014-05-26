@@ -12,6 +12,6 @@ notifications:
     template:
 #          - "\u000304%{repository_name}/%{branch} #%{build_number} (%{author}): \u001F\u0002%{result}"
 #          - "\u000303Commit Message: %{commit_message}"
-          - "\u000314[\u000313%{repository_name}\u000310%{branch} \u000308#%{build_number}\u000F, \u000311Duration: %{duration}\u000F, \u000314(\u000312%{author}\u000314)\u000307: \u000F\u0002\u001F\u000304%{result}"
+          - "\u000314[\u000313%{repository_name}\u000310/\u000313%{branch}\u000314] \u000308#%{build_number}\u000F, \u000311Duration: %{duration}\u000F, \u000314(\u000312%{author}\u000314)\u000307: \u000F\u0002\u001F\u000304%{result}"
           - "\u000303Commit Message: \u000309%{commit_message}"
     skip_join: true
