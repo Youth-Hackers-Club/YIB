@@ -1,0 +1,29 @@
+<project name="YIB" basedir="." default="main">
+
+    <property name="src.dir"     value="src"/>
+
+    <property name="build.dir"   value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+
+    <property name="main-class"  value="com.ion.ld27.Game"/>
+
+
+    <path id="jars">
+        <fileset dir="lib" includes="**/*.jar"/>
+    </path>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target name="compile" depends="clean">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="jars" >
+
+        </javac>
+    </target>
+
+
+    <target name="main" depends="compile"/>
+
+</project>
