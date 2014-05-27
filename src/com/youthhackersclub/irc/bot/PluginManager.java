@@ -47,12 +47,12 @@ public class PluginManager extends ListenerAdapter {
 		plugin.close(this);
 	}
 
-	public void exec(String command, Object[] args) {
-		commandsMap.get(command).exec(command, args);
+	public String exec(String command, Object[] args) {
+		return commandsMap.get(command).exec(command, args);
 	}
 
-	public void execStatic(String command, Object... args) {
-		exec(command, args);
+	public String execStatic(String command, Object... args) {
+		return exec(command, args);
 	}
 
 	public PircBotX getPircBotX() {
@@ -63,6 +63,7 @@ public class PluginManager extends ListenerAdapter {
 	public void onMessage(MessageEvent event) throws Exception {
 		String message = event.getMessage();
 		String[] parts = message.split(" ");
-		exec(parts[0], Arrays.copyOfRange(parts, 1, parts.length));
+		String output = exec(parts[0], Arrays.copyOfRange(parts, 1, parts.length));
+		event.respond(output);
 	}
 }
