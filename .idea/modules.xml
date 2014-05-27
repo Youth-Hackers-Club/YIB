@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/YIB.iml" filepath="$PROJECT_DIR$/YIB.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../YIB-Plugins/YIB-Plugins.iml" filepath="$PROJECT_DIR$/../YIB-Plugins/YIB-Plugins.iml" />
     </modules>
   </component>
 </project>
