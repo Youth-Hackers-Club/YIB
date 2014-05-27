@@ -5,6 +5,9 @@ import org.pircbotx.PircBotX;
 
 public class Main {
 
+	private static PircBotX bot;
+	private static PluginManager pluginManager;
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void main(String[] args) throws Exception {
 		Configuration configuration = new Configuration.Builder()
@@ -17,8 +20,9 @@ public class Main {
 			.addAutoJoinChannel("#YHC") //Join the official #pircbotx channel
 			.setNickservPassword("YoureTheBestAround")
 			.buildConfiguration();
-		
-		PircBotX bot = new PircBotX(configuration);
+
+		bot = new PircBotX(configuration);
+		pluginManager = new PluginManager(bot);
 
 		try {
 			bot.startBot();
@@ -26,6 +30,4 @@ public class Main {
 			ex.printStackTrace();
 		} 
 	}
-
-
 }
