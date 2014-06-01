@@ -35,4 +35,4 @@ The first steps will be to get the auto compiling and [Travis.ci](https://travis
 
 The [git-repo](https://github.com/Youth-Hackers-Club/YIB/) is on github, currently empty. Once there is enough base code I'll push the initial commit and start testing the CI.
 
-As for coding guidelines, just stick to making the code look nice and follow standard practices. If you submit a pull request, we'll let you know what needs to change before we'll merge.
+As for coding guidelines, just stick to making the code look nice and follow standard practices such as use tabs instead of spaces. If you submit a pull request, we'll let you know what needs to change before we'll merge.
