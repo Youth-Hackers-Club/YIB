@@ -6,6 +6,15 @@ import org.pircbotx.hooks.events.MessageEvent;
 
 import javax.script.*;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,16 +46,47 @@ public class PluginManager extends ListenerAdapter<PircBotX> {
 	private PircBotX pircBotX;
 	private Properties properties;
 	
-	public PluginManager(PircBotX pircBotX, Properties properties) {
+	public PluginManager(PircBotX pircBotX, Properties properties) throws URISyntaxException {
 		this.properties = properties;
 		this.pircBotX = pircBotX;
 		plugins = new ArrayList<>();
 		commandsMap = new HashMap<String, Plugin>();
 		namesMap = new HashMap<String, Plugin>();
 		engineManager = new ScriptEngineManager();
+		reLoadPlugins();
+	}
+	
+	public void reLoadPlugins() throws URISyntaxException {
+		Path folder = Paths.get(new URI(properties.getProperty("plugin.folder")));
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(folder)) {
+			for (Path file : stream) {
+				if (file.toString().endsWith(".js")) {
+					System.out.println(file);
+					try {
+						try {
+							removeJS(new FileReader(file.toFile()));
+						} catch (NullPointerException e) {
+							//Assuming JS file was never added
+						}
+						addJS(new FileReader(file.toFile()));
+					} catch (ScriptException e) {
+						//TODO Handle nicely (Low Level)
+					}
+				}
+			}
+		} catch (IOException e) {
+			//TODO Handle nicely (Bad Config)
+			e.printStackTrace();
+		}
 	}
 	
 	public Plugin addJS(String code) throws ScriptException {
+		Plugin p = new Plugin.JSPlugin(engineManager, code, defaultJS);
+		add(p);
+		return p;
+	}
+	
+	public Plugin addJS(Reader code) throws ScriptException {
 		Plugin p = new Plugin.JSPlugin(engineManager, code, defaultJS);
 		add(p);
 		return p;
@@ -74,11 +114,13 @@ public class PluginManager extends ListenerAdapter<PircBotX> {
 		remove(namesMap.get(name));
 	}
 	
-	public void removeJS(String code) throws ScriptException {//TODO Shorten
-		ScriptEngine javascriptEngine = engineManager.getEngineByName("JavaScript");
-		javascriptEngine.eval(code);
-		Invocable invocable = (Invocable) javascriptEngine;
-		Plugin p = invocable.getInterface(Plugin.class);
+	public void removeJS(Reader code) throws ScriptException {
+		Plugin p = new Plugin.JSPlugin(engineManager, code, defaultJS);
+		remove(namesMap.get(p.getName()));
+	}
+	
+	public void removeJS(String code) throws ScriptException {
+		Plugin p = new Plugin.JSPlugin(engineManager, code, defaultJS);
 		remove(namesMap.get(p.getName()));
 	}
 	
