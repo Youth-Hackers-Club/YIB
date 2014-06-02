@@ -9,6 +9,7 @@ import javax.script.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Properties;
 
 /**
  * Created by Scott Ramsay on 27/05/2014.
@@ -26,29 +27,31 @@ public class PluginManager extends ListenerAdapter<PircBotX> {
 			"function equals(p) {return p == this}" +"\n"+
 			"function hashCode() {return hashCode}" +"\n"+
 			"";
-
+	
 	private HashMap<String, Plugin> commandsMap;
 	private HashMap<String, Plugin> namesMap;
 	private ArrayList<Plugin> plugins;
-
+	
 	private ScriptEngineManager engineManager;
-
+	
 	private PircBotX pircBotX;
-
-	public PluginManager(PircBotX pircBotX) {
+	private Properties properties;
+	
+	public PluginManager(PircBotX pircBotX, Properties properties) {
+		this.properties = properties;
 		this.pircBotX = pircBotX;
 		plugins = new ArrayList<>();
 		commandsMap = new HashMap<String, Plugin>();
 		namesMap = new HashMap<String, Plugin>();
 		engineManager = new ScriptEngineManager();
 	}
-
+	
 	public Plugin addJS(String code) throws ScriptException {
 		Plugin p = new Plugin.JSPlugin(engineManager, code, defaultJS);
 		add(p);
 		return p;
 	}
-
+	
 	public void add(Plugin plugin) {
 		plugins.add(plugin);
 		plugin.init(this);
@@ -57,7 +60,7 @@ public class PluginManager extends ListenerAdapter<PircBotX> {
 			commandsMap.put(plugin.getCommands()[i], plugin);
 		}
 	}
-
+	
 	public void remove(Plugin plugin) {
 		plugins.remove(plugin);
 		namesMap.remove(plugin);
@@ -78,7 +81,7 @@ public class PluginManager extends ListenerAdapter<PircBotX> {
 		Plugin p = invocable.getInterface(Plugin.class);
 		remove(namesMap.get(p.getName()));
 	}
-
+	
 	public String exec(String command, Object[] args) {
 		try {
 			Plugin p = commandsMap.get(command);
@@ -87,19 +90,22 @@ public class PluginManager extends ListenerAdapter<PircBotX> {
 			return "Command " + command + " not found";
 		}
 	}
-
+	
 	public String execStatic(String command, Object... args) {
 		return exec(command, args);
 	}
-
+	
 	@Override
 	public void onMessage(MessageEvent<PircBotX> event) throws Exception {
 		String message = event.getMessage();
 		String[] parts = message.split(" ");
-		String output = exec(parts[0], Arrays.copyOfRange(parts, 1, parts.length));
-		event.respond(output);
+		if (message.startsWith(properties.getProperty("plugin.prefix", "!!!"))) {
+			String command = message.substring(properties.getProperty("plugin.prefix", "!!!").length());
+			String output = exec(command, Arrays.copyOfRange(parts, 1, parts.length));
+			event.respond(output);
+		}
 	}
-
+	
 	public PircBotX getPircBotX() {
 		return pircBotX;
 	}
@@ -110,21 +116,21 @@ public class PluginManager extends ListenerAdapter<PircBotX> {
 	public HashMap<String, Plugin> getCommandsMap() {
 		return commandsMap;
 	}
-
+	
 	/**
 	 * @return the namesMap
 	 */
 	public HashMap<String, Plugin> getNamesMap() {
 		return namesMap;
 	}
-
+	
 	/**
 	 * @return the plugins
 	 */
 	public Plugin[] getPlugins() {
 		return plugins.toArray(new Plugin[0]);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

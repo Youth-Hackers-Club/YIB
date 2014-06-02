@@ -37,7 +37,7 @@ public class Main extends ListenerAdapter<PircBotX> {
 		Configuration configuration = builder.buildConfiguration();
 		
 		bot = new PircBotX(configuration);
-		pluginManager = new PluginManager(bot);
+		pluginManager = new PluginManager(bot, config);
 
 		try {
 			bot.startBot();
