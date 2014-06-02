@@ -81,7 +81,8 @@ public class PluginManager extends ListenerAdapter<PircBotX> {
 
 	public String exec(String command, Object[] args) {
 		try {
-			return commandsMap.get(command).exec(command, args);
+			Plugin p = commandsMap.get(command);
+			return p.exec(command, args);
 		} catch (NullPointerException e) {
 			return "Command " + command + " not found";
 		}
