@@ -92,7 +92,7 @@ public class PluginManager extends ListenerAdapter<PircBotX> {
 	}
 
 	@Override
-	public void onMessage(MessageEvent event) throws Exception {
+	public void onMessage(MessageEvent<PircBotX> event) throws Exception {
 		String message = event.getMessage();
 		String[] parts = message.split(" ");
 		String output = exec(parts[0], Arrays.copyOfRange(parts, 1, parts.length));

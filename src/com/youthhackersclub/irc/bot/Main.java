@@ -2,8 +2,11 @@ package com.youthhackersclub.irc.bot;
 
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.Event;
+import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.MessageEvent;
 
-public class Main {
+public class Main extends ListenerAdapter<PircBotX> {
 
 	private static PircBotX bot;
 	private static PluginManager pluginManager;
@@ -11,14 +14,14 @@ public class Main {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void main(String[] args) throws Exception {
 		Configuration configuration = new Configuration.Builder()
-			.setName("YIB") //Set the nick of the bot. CHANGE IN YOUR CODE
-			.setLogin("YIB") //login part of hostmask, eg name:login@host
-			.setAutoNickChange(false) //Automatically change nick when the current one is in use
-			.setCapEnabled(true) //Enable CAP features
-//			.addListener(new Time()) //This class is a listener, so add it to the bots known listeners
+			.setName("YIB_")
+			.setLogin("YIB_")
+			.setAutoNickChange(false)
+			.setCapEnabled(true)
+			.addListener(new Main())
 			.setServerHostname("irc.freenode.net")
-			.addAutoJoinChannel("#YHC") //Join the official #pircbotx channel
-			.setNickservPassword("YoureTheBestAround")
+			.addAutoJoinChannel("#YHC")
+			.setNickservPassword(args[0])
 			.buildConfiguration();
 
 		bot = new PircBotX(configuration);
@@ -26,8 +29,26 @@ public class Main {
 
 		try {
 			bot.startBot();
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		} 
+	}
+	
+	public Main() {
+		System.out.println("Main.Main()");
+	}
+	
+	@Override
+	public void onEvent(Event<PircBotX> event) throws Exception {
+		pluginManager.onEvent(event);
+		System.out.println("|"+event+"|");
+		if (event instanceof MessageEvent) {
+			onMessage((MessageEvent<PircBotX>) event);
+		}
+	}
+	
+	@Override
+	public void onMessage(MessageEvent<PircBotX> event) throws Exception {
+		System.out.println("|"+event.getMessage()+"|");
 	}
 }
