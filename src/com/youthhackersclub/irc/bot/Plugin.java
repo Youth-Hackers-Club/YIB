@@ -1,5 +1,7 @@
 package com.youthhackersclub.irc.bot;
 
+import java.io.Reader;
+
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -35,14 +37,12 @@ public interface Plugin {
 	public static class JSPlugin implements Plugin {
 		
 		private static final String defaultDefaultJS = 
-				"hashCode = 0" +"\n"+
 				"function getName() {return \"No-Name\"}" +"\n"+
 				"function getCommands() {return \"\";}" +"\n"+
 				"function init(manager) {}" +"\n"+
 				"function exec(command, args) {return \"No-Commands\"}" + "\n" +
 				"function close(manager) {}" +"\n"+
 				"function equals(p) {return p == this}" +"\n"+
-				"function hashCode() {return hashCode}" +"\n"+
 				"";
 		
 		ScriptEngine javascriptEngine;
@@ -53,6 +53,17 @@ public interface Plugin {
 		}
 
 		public JSPlugin(ScriptEngineManager engineManager, String code, String defaultjs) throws ScriptException {
+			javascriptEngine = engineManager.getEngineByName("JavaScript");
+			javascriptEngine.eval(defaultjs);
+			javascriptEngine.eval(code);
+			invocable = (Invocable) javascriptEngine;
+		}
+		
+		public JSPlugin(ScriptEngineManager engineManager, Reader jsCode) throws ScriptException {
+			this(engineManager, jsCode, defaultDefaultJS);
+		}
+
+		public JSPlugin(ScriptEngineManager engineManager, Reader code, String defaultjs) throws ScriptException {
 			javascriptEngine = engineManager.getEngineByName("JavaScript");
 			javascriptEngine.eval(defaultjs);
 			javascriptEngine.eval(code);
@@ -92,7 +103,7 @@ public interface Plugin {
 		@Override
 		public String exec(String command, Object[] args) {
 			try {
-				return (String) invocable.invokeFunction("getCommands", args);
+				return (String) invocable.invokeFunction("exec", command, args);
 			} catch (NoSuchMethodException | ScriptException e) {
 				e.printStackTrace();
 			}

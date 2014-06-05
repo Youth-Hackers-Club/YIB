@@ -6,9 +6,19 @@ import org.pircbotx.hooks.events.MessageEvent;
 
 import javax.script.*;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Properties;
 
 /**
  * Created by Scott Ramsay on 27/05/2014.
@@ -26,29 +36,62 @@ public class PluginManager extends ListenerAdapter<PircBotX> {
 			"function equals(p) {return p == this}" +"\n"+
 			"function hashCode() {return hashCode}" +"\n"+
 			"";
-
+	
 	private HashMap<String, Plugin> commandsMap;
 	private HashMap<String, Plugin> namesMap;
 	private ArrayList<Plugin> plugins;
-
+	
 	private ScriptEngineManager engineManager;
-
+	
 	private PircBotX pircBotX;
-
-	public PluginManager(PircBotX pircBotX) {
+	private Properties properties;
+	
+	public PluginManager(PircBotX pircBotX, Properties properties) throws URISyntaxException {
+		this.properties = properties;
 		this.pircBotX = pircBotX;
 		plugins = new ArrayList<>();
 		commandsMap = new HashMap<String, Plugin>();
 		namesMap = new HashMap<String, Plugin>();
 		engineManager = new ScriptEngineManager();
+		reLoadPlugins();
 	}
-
+	
+	public void reLoadPlugins() throws URISyntaxException {
+		Path folder = Paths.get(new URI(properties.getProperty("plugin.folder")));
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(folder)) {
+			for (Path file : stream) {
+				if (file.toString().endsWith(".js")) {
+					System.out.println(file);
+					try {
+						try {
+							removeJS(new FileReader(file.toFile()));
+						} catch (NullPointerException e) {
+							//Assuming JS file was never added
+						}
+						addJS(new FileReader(file.toFile()));
+					} catch (ScriptException e) {
+						//TODO Handle nicely (Low Level)
+					}
+				}
+			}
+		} catch (IOException e) {
+			//TODO Handle nicely (Bad Config)
+			e.printStackTrace();
+		}
+	}
+	
 	public Plugin addJS(String code) throws ScriptException {
 		Plugin p = new Plugin.JSPlugin(engineManager, code, defaultJS);
 		add(p);
 		return p;
 	}
-
+	
+	public Plugin addJS(Reader code) throws ScriptException {
+		Plugin p = new Plugin.JSPlugin(engineManager, code, defaultJS);
+		add(p);
+		return p;
+	}
+	
 	public void add(Plugin plugin) {
 		plugins.add(plugin);
 		plugin.init(this);
@@ -57,7 +100,7 @@ public class PluginManager extends ListenerAdapter<PircBotX> {
 			commandsMap.put(plugin.getCommands()[i], plugin);
 		}
 	}
-
+	
 	public void remove(Plugin plugin) {
 		plugins.remove(plugin);
 		namesMap.remove(plugin);
@@ -71,34 +114,40 @@ public class PluginManager extends ListenerAdapter<PircBotX> {
 		remove(namesMap.get(name));
 	}
 	
-	public void removeJS(String code) throws ScriptException {//TODO Shorten
-		ScriptEngine javascriptEngine = engineManager.getEngineByName("JavaScript");
-		javascriptEngine.eval(code);
-		Invocable invocable = (Invocable) javascriptEngine;
-		Plugin p = invocable.getInterface(Plugin.class);
+	public void removeJS(Reader code) throws ScriptException {
+		Plugin p = new Plugin.JSPlugin(engineManager, code, defaultJS);
 		remove(namesMap.get(p.getName()));
 	}
-
+	
+	public void removeJS(String code) throws ScriptException {
+		Plugin p = new Plugin.JSPlugin(engineManager, code, defaultJS);
+		remove(namesMap.get(p.getName()));
+	}
+	
 	public String exec(String command, Object[] args) {
 		try {
-			return commandsMap.get(command).exec(command, args);
+			Plugin p = commandsMap.get(command);
+			return p.exec(command, args);
 		} catch (NullPointerException e) {
 			return "Command " + command + " not found";
 		}
 	}
-
+	
 	public String execStatic(String command, Object... args) {
 		return exec(command, args);
 	}
-
+	
 	@Override
 	public void onMessage(MessageEvent<PircBotX> event) throws Exception {
 		String message = event.getMessage();
 		String[] parts = message.split(" ");
-		String output = exec(parts[0], Arrays.copyOfRange(parts, 1, parts.length));
-		event.respond(output);
+		if (message.startsWith(properties.getProperty("plugin.prefix", "!!!"))) {
+			String command = message.substring(properties.getProperty("plugin.prefix", "!!!").length());
+			String output = exec(command, Arrays.copyOfRange(parts, 1, parts.length));
+			event.respond(output);
+		}
 	}
-
+	
 	public PircBotX getPircBotX() {
 		return pircBotX;
 	}
@@ -109,21 +158,21 @@ public class PluginManager extends ListenerAdapter<PircBotX> {
 	public HashMap<String, Plugin> getCommandsMap() {
 		return commandsMap;
 	}
-
+	
 	/**
 	 * @return the namesMap
 	 */
 	public HashMap<String, Plugin> getNamesMap() {
 		return namesMap;
 	}
-
+	
 	/**
 	 * @return the plugins
 	 */
 	public Plugin[] getPlugins() {
 		return plugins.toArray(new Plugin[0]);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
