@@ -6,9 +6,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 
 import javax.script.*;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.DirectoryStream;
@@ -46,17 +44,20 @@ public class PluginManager extends ListenerAdapter<PircBotX> {
 	private PircBotX pircBotX;
 	private Properties properties;
 	
-	public PluginManager(PircBotX pircBotX, Properties properties) throws URISyntaxException {
+	public PluginManager(PircBotX pircBotX, Properties properties) throws FileNotFoundException {
+//	public PluginManager(PircBotX pircBotX, Properties properties) throws URISyntaxException {
 		this.properties = properties;
 		this.pircBotX = pircBotX;
 		plugins = new ArrayList<>();
 		commandsMap = new HashMap<String, Plugin>();
 		namesMap = new HashMap<String, Plugin>();
 		engineManager = new ScriptEngineManager();
-		reLoadPlugins();
+//		reloadPlugins();
+		reloadPluginsV2();
 	}
-	
-	public void reLoadPlugins() throws URISyntaxException {
+
+	@Deprecated //This doesn't work. {Windows}
+	public void reloadPlugins() throws URISyntaxException {
 		Path folder = Paths.get(new URI(properties.getProperty("plugin.folder")));
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(folder)) {
 			for (Path file : stream) {
@@ -67,6 +68,7 @@ public class PluginManager extends ListenerAdapter<PircBotX> {
 							removeJS(new FileReader(file.toFile()));
 						} catch (NullPointerException e) {
 							//Assuming JS file was never added
+							//You're also assuming that this isn't a reload method. :)
 						}
 						addJS(new FileReader(file.toFile()));
 					} catch (ScriptException e) {
@@ -77,6 +79,27 @@ public class PluginManager extends ListenerAdapter<PircBotX> {
 		} catch (IOException e) {
 			//TODO Handle nicely (Bad Config)
 			e.printStackTrace();
+		}
+	}
+
+	public void reloadPluginsV2() throws FileNotFoundException {
+		File folder = new File(properties.getProperty("plugin.folder"));
+		if (!folder.exists()) {throw new FileNotFoundException();}
+		if (!folder.isDirectory()) {throw new FileNotFoundException();}
+		for (File file : folder.listFiles()) {
+			if (file.getName().endsWith(".js")) {
+				System.out.println(file.getName());
+				try {
+					try {
+						removeJS(new FileReader(file));
+					} catch (NullPointerException e) {
+						//
+					}
+					addJS(new FileReader(file));
+				} catch (ScriptException e) {
+					//TODO Handle nicely (Low Level)
+				}
+			}
 		}
 	}
 	
@@ -141,8 +164,8 @@ public class PluginManager extends ListenerAdapter<PircBotX> {
 	public void onMessage(MessageEvent<PircBotX> event) throws Exception {
 		String message = event.getMessage();
 		String[] parts = message.split(" ");
-		if (message.startsWith(properties.getProperty("plugin.prefix", "!!!"))) {
-			String command = message.substring(properties.getProperty("plugin.prefix", "!!!").length());
+		if (message.startsWith(properties.getProperty("plugin.prefix", "!"))) {
+			String command = message.substring(properties.getProperty("plugin.prefix", "!").length());
 			String output = exec(command, Arrays.copyOfRange(parts, 1, parts.length));
 			if (!output.isEmpty()) {
 				event.respond(output);
