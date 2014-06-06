@@ -144,7 +144,9 @@ public class PluginManager extends ListenerAdapter<PircBotX> {
 		if (message.startsWith(properties.getProperty("plugin.prefix", "!!!"))) {
 			String command = message.substring(properties.getProperty("plugin.prefix", "!!!").length());
 			String output = exec(command, Arrays.copyOfRange(parts, 1, parts.length));
-			event.respond(output);
+			if (!output.isEmpty()) {
+				event.respond(output);
+			}
 		}
 	}
 	
