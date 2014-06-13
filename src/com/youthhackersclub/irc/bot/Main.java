@@ -31,8 +31,8 @@ public class Main extends ListenerAdapter<PircBotX> {
 			.setLogin(config.getProperty("irc.login", "YIB"))
 			.setServerHostname(config.getProperty("irc.serverHostname"))
 			.setNickservPassword(config.getProperty("irc.nickservPassword"));
-		for (int i = 0; i < config.getProperty("irc.autoJoinChannels", "").split("\\ ").length; i++) {
-			builder.addAutoJoinChannel(config.getProperty("irc.autoJoinChannels").split(" ")[i]);
+		for (int i = 0; i < config.getProperty("irc.autoJoinChannels").split(",").length; i++) {
+			builder.addAutoJoinChannel(config.getProperty("irc.autoJoinChannels").split(",")[i]);
 		}
 		Configuration configuration = builder.buildConfiguration();
 		
@@ -53,13 +53,13 @@ public class Main extends ListenerAdapter<PircBotX> {
 	@Override
 	public void onEvent(Event<PircBotX> event) throws Exception {
 		pluginManager.onEvent(event);
-		if (event instanceof MessageEvent) {
-			onMessage((MessageEvent<PircBotX>) event);
-		}
+//		if (event instanceof MessageEvent) {
+//			onMessage((MessageEvent<PircBotX>) event);
+//		}
 	}
-	
-	@Override
-	public void onMessage(MessageEvent<PircBotX> event) throws Exception {
-		System.out.println("|MSG|"+event.getMessage()+"|");
-	}
+
+//	@Override
+//	public void onMessage(MessageEvent<PircBotX> event) throws Exception {
+//		System.out.println("|MSG|"+event.getMessage()+"|");
+//	}
 }

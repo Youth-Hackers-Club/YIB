@@ -7,8 +7,6 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import org.pircbotx.hooks.Event;
-
 /**
  * @author Scott Ramsay
  */
@@ -30,7 +28,7 @@ public interface Plugin {
 	 * @param args arguments for the command
 	 * @return The output of the command
 	 */
-	public String exec(String command, Event event, Object[] args);
+	public String exec(String command, Object[] args);
 	/**
 	 * @param manager The PluginManager object that the plugin interacts with for lower level functions
 	 */
@@ -103,9 +101,9 @@ public interface Plugin {
 		}
 
 		@Override
-		public String exec(String command, Event event, Object[] args) {
+		public String exec(String command, Object[] args) {
 			try {
-				return (String) invocable.invokeFunction("exec", command, event, args);
+				return (String) invocable.invokeFunction("exec", command, args);
 			} catch (NoSuchMethodException | ScriptException e) {
 				e.printStackTrace();
 			}
