@@ -19,7 +19,7 @@ The bot can be addressed by using it's prefix character before the command **!**
 * Useful utilities like:
     * Time
     * Seen
-    * Helps
+    * Help
     * Games
     * Tell/Msg
 * More to come, feel free to post ideas in the disscusion page
