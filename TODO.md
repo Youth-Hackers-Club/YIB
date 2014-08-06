@@ -15,4 +15,4 @@ TODO
     - permissions
     - games
     - quiz
-    - Chat bot (in private query)
+    - Chat bot (in private message)
